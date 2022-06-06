@@ -1,0 +1,106 @@
+reader:
+    name: mhs_1b_nc
+    short_name: MHS L1c Reader
+    long_name: MHS L1c Reader
+    description: NetCDF4 reader for MHS data retreived from Eumetsat
+    sensors: [MHSx]
+    reader: !!python/name:satpy.readers.yaml_reader.FileYAMLReader
+
+file_types:
+    mhs_l1b_nc:
+        file_reader: !!python/name:satpy.readers.mhs_1b_nc.NcMHS1B
+        file_patterns: ['W_XX-EUMETSAT-Darmstadt,SOUNDING+SATELLITE,{platform_id}+MHS_C_EUMP_{start_time:%Y%m%d%H%M%S}_{orbit_number}_eps_o_l1.nc']
+
+
+datasets:
+  lat:
+    name: lat
+    file_type:
+    - mhs_l1b_nc
+    units: degrees_north
+    standard_name: latitude
+
+  lon:
+    name: lon
+    file_type:
+    - mhs_l1b_nc
+    units: degrees_east
+    standard_name: longitude
+
+  channel_1:
+    name: channel_1
+    coordinates: [lon, lat]
+    long_name: 'Scene Radiance for Channel 1'
+    units: 'mW m-2 sr-1 (cm-1)-1'
+    file_type: mhs_l1b_nc
+    file_key: 'channel_1'
+
+
+  channel_2:
+    name: channel_2
+    coordinates: [lon, lat]
+    long_name: 'Scene Radiance for Channel 2'
+    units: 'mW m-2 sr-1 (cm-1)-1'
+    file_type: mhs_l1b_nc
+    file_key: 'channel_2'
+
+  channel_3:
+    name: channel_3
+    coordinates: [lon, lat]
+    long_name: 'Scene Radiance for Channel 3'
+    units: 'mW m-2 sr-1 (cm-1)-1'
+    file_type: mhs_l1b_nc
+    file_key: 'channel_3'
+
+  channel_4:
+    name: channel_4
+    coordinates: [lon, lat]
+    long_name: 'Scene Radiance for Channel 4'
+    units: 'mW m-2 sr-1 (cm-1)-1'
+    file_type: mhs_l1b_nc
+    file_key: 'channel_4'
+
+  channel_5:
+    name: channel_5
+    coordinates: [lon, lat]
+    long_name: 'Scene Radiance for Channel 5'
+    units: 'mW m-2 sr-1 (cm-1)-1'
+    file_type: mhs_l1b_nc
+    file_key: 'channel_5'
+
+  surface_properties:
+    name: surface_properties
+    coordinates: [lon, lat]
+    long_name: 'Surface property'
+    units: '1'
+    file_type: mhs_l1b_nc
+    file_key: 'surface_properties'
+
+  terrain_elevation:
+    name: terrain_elevation
+    coordinates: [lon, lat]
+    long_name: 'average terrain elevation'
+    units: 'm'
+    file_type: mhs_l1b_nc
+    file_key: 'terrain_elevation'
+
+  record_start_time:
+    name: record_start_time
+    coordinates: [lon, lat]
+    long_name: 'Record start time from the Generic Record Header of the MDR'
+    file_type: mhs_l1b_nc
+    file_key: 'record_start_time'
+
+  my_lon:
+    name: my_lon
+    coordinates: [lon, lat]
+    long_name: 'lon'
+    file_type: mhs_l1b_nc
+    file_key: 'lon'
+
+  my_lat:
+    name: my_lat
+    coordinates: [lon, lat]
+    long_name: 'lat'
+    file_type: mhs_l1b_nc
+    file_key: 'lat'

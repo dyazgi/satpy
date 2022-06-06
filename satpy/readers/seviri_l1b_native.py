@@ -26,6 +26,7 @@ References:
 """
 
 import logging
+
 from datetime import datetime
 
 import dask.array as da
@@ -57,13 +58,17 @@ from satpy.readers.seviri_base import (
     pad_data_horizontally,
     pad_data_vertically,
 )
+
+import os
+
+
 from satpy.readers.seviri_l1b_native_hdr import (
     DEFAULT_15_SECONDARY_PRODUCT_HEADER,
     GSDTRecords,
     get_native_header,
     native_trailer,
 )
-from satpy.readers.utils import reduce_mda
+from satpy.readers.utils import reduce_mda, unzip_file
 
 logger = logging.getLogger('native_msg')
 
@@ -99,6 +104,11 @@ class NativeMSGFileHandler(BaseFileHandler):
         super(NativeMSGFileHandler, self).__init__(filename,
                                                    filename_info,
                                                    filetype_info)
+
+        self._unzipped = unzip_file(self.filename)
+        if self._unzipped:
+            self.filename = self._unzipped
+
         self.platform_name = None
         self.calib_mode = calib_mode
         self.ext_calib_coefs = ext_calib_coefs or {}
@@ -118,6 +128,14 @@ class NativeMSGFileHandler(BaseFileHandler):
         self.dask_array = da.from_array(self._get_memmap(), chunks=(CHUNK_SIZE,))
         self._read_trailer()
         self.image_boundaries = ImageBoundaries(self.header, self.trailer, self.mda)
+
+    def __del__(self):
+        """Delete the instance."""
+        if self._unzipped:
+            try:
+                os.remove(self._unzipped)
+            except OSError:
+                pass
 
     def _has_archive_header(self):
         """Check whether the file includes an ASCII archive header."""

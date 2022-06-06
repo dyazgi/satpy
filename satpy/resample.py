@@ -1310,6 +1310,40 @@ class BucketFraction(BucketResamplerBase):
         return result
 
 
+class BucketMin(BucketResamplerBase):
+    """Class for bucket resampling which implements minimum (min).
+
+    This resampler calculates the minumum of all the values
+    that are closest to each bin and inside the target area.
+
+    """
+
+    def compute(self, data, **kwargs):
+        """Call the resampling."""
+        if data.ndim > 2:
+            raise ValueError("BucketMin not implemented for 3D datasets")
+
+        result = self.resampler.get_min(data, **kwargs)
+
+        return result
+
+class BucketMax(BucketResamplerBase):
+    """Class for bucket resampling which implements maximum (max).
+
+    This resampler calculates the mmxumum of all the values
+    that are closest to each bin and inside the target area.
+
+    """
+
+    def compute(self, data, **kwargs):
+        """Call the resampling."""
+        if data.ndim > 2:
+            raise ValueError("BucketMin not implemented for 3D datasets")
+
+        result = self.resampler.get_max(data, **kwargs)
+
+        return result
+
 # TODO: move this to pyresample.resampler
 RESAMPLERS = {"kd_tree": KDTreeResampler,
               "nearest": KDTreeResampler,
@@ -1320,6 +1354,8 @@ RESAMPLERS = {"kd_tree": KDTreeResampler,
               "bucket_sum": BucketSum,
               "bucket_count": BucketCount,
               "bucket_fraction": BucketFraction,
+              "bucket_min": BucketMin,
+              "bucket_max": BucketMax,
               }
 if DaskEWAResampler is not None:
     RESAMPLERS['ewa'] = DaskEWAResampler

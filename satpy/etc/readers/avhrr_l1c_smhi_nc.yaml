@@ -1,0 +1,80 @@
+reader:
+    name: avhrr_l1c_smhi_nc
+    short_name: SMHI AVHRR L1c
+    long_name: SMHI AVHRR L1c Reader
+    description: NetCDF4 reader for Intermediate NWCSAF/PPS SMHI AVHRR L1c
+    sensors: [avhrr]
+    reader: !!python/name:satpy.readers.yaml_reader.FileYAMLReader
+
+
+file_types:
+    avhrr_smhi_nc:
+        file_reader: !!python/name:satpy.readers.nwcsaf_nc.NcNWCSAF
+        file_patterns: ['S_NWC_avhrr_{platform}_{orbit_number}_{start_time:%Y%m%dT%H%M%S%f}Z_{end_time:%Y%m%dT%H%M%S%f}Z.nc']
+
+
+datasets:
+  lon:
+    name: lon
+    file_type:
+    - avhrr_smhi_nc
+    units: "degrees"
+    standard_name: longitude
+  lat:
+    name: lat
+    file_type:
+    - avhrr_smhi_nc
+    units: "degrees"
+    standard_name: latitude
+
+  ch_r06:
+    name: ch_r06
+    wavelength: [0.58, 0.63, 0.68]
+    coordinates: [lon, lat]
+    description: 'AVHRR ch_1'
+    standard_name: 'toa_bidirectional_reflectance'
+    long_name: 'Reflectance for 0.6 micro meter channel'
+    file_type: avhrr_smhi_nc
+    file_key: 'image1'
+
+
+  ch_r09:
+    name: ch_r09
+    wavelength: [0.725, 0.8625, 1.]
+    coordinates: [lon, lat]
+    description: 'AVHRR ch_2'
+    standard_name: 'toa_bidirectional_reflectance'
+    long_name: 'Reflectance for 0.9 micro meter channel'
+    file_type: avhrr_smhi_nc
+    file_key: 'image2'
+
+
+  ch_r16:
+    name: ch_r16
+    wavelength: [1.58, 1.61, 1.64]
+    coordinates: [lon, lat]
+    description: 'AVHRR ch_3a'
+    standard_name: 'toa_bidirectional_reflectance'
+    long_name: 'Reflectance for 1.6 micro meter channel'
+    file_type: avhrr_smhi_nc
+    file_key: 'image3'
+
+  ch_tb11:
+    name: ch_tb11
+    wavelength: [10.3, 10.8, 11.3]
+    coordinates: [lon, lat]
+    description: 'AVHRR ch_4'
+    standard_name: 'toa_brightness_temperature'
+    long_name: 'Brightness temperature for 11 micro meter channel'
+    file_type: avhrr_smhi_nc
+    file_key: 'image4'
+
+  ch_tb12:
+    name: ch_tb12
+    wavelength: [11.5, 12.0, 12.5]
+    coordinates: [lon, lat]
+    description: 'AVHRR ch_5'
+    standard_name: 'toa_brightness_temperature'
+    long_name: 'Brightness temperature for 12 micro meter channel'
+    file_type: avhrr_smhi_nc
+    file_key: 'image5'

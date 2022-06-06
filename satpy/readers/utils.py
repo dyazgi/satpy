@@ -20,6 +20,7 @@
 import bz2
 import logging
 import os
+import pathlib
 import shutil
 import tempfile
 import warnings
@@ -32,8 +33,8 @@ import numpy as np
 import pyproj
 import xarray as xr
 from pyresample.geometry import AreaDefinition
-
 from satpy import CHUNK_SIZE
+from zipfile import ZipFile
 
 LOGGER = logging.getLogger(__name__)
 
@@ -235,9 +236,9 @@ def unzip_file(filename):
                     os.remove(tmpfilepath)
                     raise
             return tmpfilepath
-
         # Otherwise, fall back to the original method
         bz2file = bz2.BZ2File(filename)
+
         with closing(os.fdopen(fdn, 'wb')) as ofpt:
             try:
                 ofpt.write(bz2file.read())
@@ -248,6 +249,22 @@ def unzip_file(filename):
                 os.remove(tmpfilepath)
                 return None
         return tmpfilepath
+    elif os.fspath(filename).endswith('zip'):
+        try:
+            tmpDir = tempfile.gettempdir()
+            with ZipFile(filename, 'r') as zipObj:
+                listOfFileNames = zipObj.namelist()
+                basename = os.path.basename(filename)[:-4]
+                for zFileName in listOfFileNames:
+                    if zFileName.startswith(basename):
+                        return zipObj.extract(zFileName, tmpDir)
+            raise IOError("Could not file a file starts with %S in %s"
+                          % (basename,filename))
+        except IOError:
+            import traceback
+            traceback.print_exc()
+            LOGGER.info("Failed to read zipped file %s", str(filename))
+            return None
 
     return None
 
